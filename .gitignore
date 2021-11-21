@@ -21,3 +21,5 @@ yarn-error.log*
 server/.env
 client/cypress/videos
 client/cypress/screenshots
+
+.prettierrc
