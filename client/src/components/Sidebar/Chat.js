@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
@@ -16,13 +16,26 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },
+  unreadBubble: {
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#3F92FF",
+    paddingLeft: 7,
+    paddingRight: 7,
+    paddingTop: 2
+  },
+  unreadCount: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: 700
   }
 }));
 
 const Chat = (props) => {
   const classes = useStyles();
   const { conversation } = props;
-  const { otherUser } = conversation;
+  const { otherUser, unreadCount } = conversation;
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
@@ -37,6 +50,9 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      <Box className={classes.unreadBubble}>
+        <Typography className={classes.unreadCount}>{unreadCount}</Typography>
+      </Box>
     </Box>
   );
 };
