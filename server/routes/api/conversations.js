@@ -94,4 +94,28 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.post("/mark-as-read/:conversationId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const { conversationId } = req.params;
+
+    // A user will have read all of their own messages, so we can set all messages to read here
+    await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+        },
+      }
+    );
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
