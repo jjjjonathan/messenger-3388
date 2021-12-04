@@ -50,9 +50,11 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
-      <Box className={classes.unreadBubble}>
-        <Typography className={classes.unreadCount}>{unreadCount}</Typography>
-      </Box>
+      {unreadCount ? (
+        <Box className={classes.unreadBubble}>
+          <Typography className={classes.unreadCount}>{unreadCount}</Typography>
+        </Box>
+      ) : null}
     </Box>
   );
 };
