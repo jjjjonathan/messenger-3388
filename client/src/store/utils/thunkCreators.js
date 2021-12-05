@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  markAsRead,
+  setReadStatus,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -119,12 +119,13 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-export const markAllAsRead = (conversationId) => async (dispatch) => {
+export const markAsRead = (conversationId, senderId) => async (dispatch) => {
   try {
-    console.log("starting");
-    await axios.post(`/api/conversations/mark-as-read/${conversationId}`);
-    console.log("to dispatch");
-    dispatch(markAsRead(conversationId));
+    await axios.post(
+      `/api/conversations/${conversationId}/mark-as-read/${senderId}`
+    );
+    dispatch(setReadStatus(conversationId, senderId));
+    socket.emit("mark-as-read", { conversationId, senderId });
   } catch (error) {
     console.error(error);
   }
