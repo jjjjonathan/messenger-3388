@@ -6,6 +6,19 @@ import moment from "moment";
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
 
+  let mostRecentReadId;
+
+  // if latest message is from other user, don't display read avatar
+  if (messages[messages.length - 1]?.senderId === userId) {
+    // find most recently read message sent by user
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].read) {
+        mostRecentReadId = messages[i].id;
+        break;
+      }
+    }
+  }
+
   return (
     <Box>
       {messages.map((message) => {
@@ -17,7 +30,7 @@ const Messages = (props) => {
             text={message.text}
             time={time}
             otherUser={otherUser}
-            read={message.read}
+            mostRecentRead={mostRecentReadId === message.id}
           />
         ) : (
           <OtherUserBubble
@@ -25,7 +38,6 @@ const Messages = (props) => {
             text={message.text}
             time={time}
             otherUser={otherUser}
-            read={message.read}
           />
         );
       })}

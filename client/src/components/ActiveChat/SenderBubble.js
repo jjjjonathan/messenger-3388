@@ -27,20 +27,22 @@ const useStyles = makeStyles(() => ({
   },
   readAvatar: {
     height: 20,
-    width: 20
+    width: 20,
+    marginTop: 9,
+    marginRight: 1
   },
 }));
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text, read, otherUser } = props;
+  const { time, text, mostRecentRead, otherUser } = props;
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
-      {read && (
+      {mostRecentRead && (
         <Avatar
           alt={otherUser.username}
           src={otherUser.photoUrl}
