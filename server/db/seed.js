@@ -62,6 +62,24 @@ async function seed() {
     conversationId: chiumboConvo.id,
     senderId: chiumbo.id,
     text: "Sure! What time?",
+    read: true,
+  });
+  await Message.create({
+    conversationId: chiumboConvo.id,
+    senderId: thomas.id,
+    text: "7:30 work for you?",
+    read: true,
+  });
+  await Message.create({
+    conversationId: chiumboConvo.id,
+    senderId: thomas.id,
+    text: "Wait",
+    read: false,
+  });
+  await Message.create({
+    conversationId: chiumboConvo.id,
+    senderId: thomas.id,
+    text: "Let's do 8",
     read: false,
   });
 
