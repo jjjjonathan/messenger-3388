@@ -74,7 +74,10 @@ router.get("/", async (req, res, next) => {
       // set property for unread message count
       convoJSON.unreadCount = 0;
       for (let i = 0; i < convoJSON.messages.length; i++) {
-        if (!convoJSON.messages[i].read && userId !== convoJSON.senderId)
+        if (
+          !convoJSON.messages[i].read &&
+          convoJSON.messages[i].senderId !== userId
+        )
           convoJSON.unreadCount += 1;
       }
 
@@ -94,28 +97,31 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/mark-as-read/:conversationId", async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-
-    const { conversationId } = req.params;
-
-    // A user will have read all of their own messages, so we can set all messages to read here
-    await Message.update(
-      { read: true },
-      {
-        where: {
-          conversationId,
-        },
+router.post(
+  "/:conversationId/mark-as-read/:senderId",
+  async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.sendStatus(401);
       }
-    );
 
-    res.status(204).end();
-  } catch (error) {
-    next(error);
+      const { conversationId, senderId } = req.params;
+
+      await Message.update(
+        { read: true },
+        {
+          where: {
+            conversationId,
+            senderId,
+          },
+        }
+      );
+
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;
