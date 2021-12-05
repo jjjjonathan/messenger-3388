@@ -33,12 +33,7 @@ const Messages = (props) => {
             mostRecentRead={mostRecentReadId === message.id}
           />
         ) : (
-          <OtherUserBubble
-            key={message.id}
-            text={message.text}
-            time={time}
-            otherUser={otherUser}
-          />
+          <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
       })}
     </Box>
