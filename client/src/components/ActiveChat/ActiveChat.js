@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
-import { markAllAsRead } from "../../store/utils/thunkCreators";
+import { markAsRead } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,13 +23,13 @@ const useStyles = makeStyles(() => ({
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  const { user, markAllAsRead } = props;
+  const { user, markAsRead } = props;
   const conversation = props.conversation || {};
 
   useEffect(() => {
     (async () => {
       if (conversation.unreadCount > 0) {
-        await markAllAsRead(conversation.id);
+        await markAsRead(conversation.id, conversation.otherUser.id);
       }
     })();
   });
@@ -74,8 +74,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    markAllAsRead: (message) => {
-      dispatch(markAllAsRead(message));
+    markAsRead: (conversationId, senderId) => {
+      dispatch(markAsRead(conversationId, senderId));
     },
   };
 };
