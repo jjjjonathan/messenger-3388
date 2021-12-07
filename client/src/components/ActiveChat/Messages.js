@@ -7,15 +7,11 @@ const Messages = (props) => {
   const { messages, otherUser, userId } = props;
 
   let mostRecentReadId;
-
-  // if latest message is from other user, don't display read avatar
-  if (messages[messages.length - 1]?.senderId === userId) {
-    // find most recently read message sent by user
-    for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i].read) {
-        mostRecentReadId = messages[i].id;
-        break;
-      }
+  // find most recently read message sent by user
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].read && messages[i].senderId === userId) {
+      mostRecentReadId = messages[i].id;
+      break;
     }
   }
 
