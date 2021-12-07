@@ -96,31 +96,39 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post(
-  "/:conversationId/mark-as-read/:senderId",
-  async (req, res, next) => {
-    try {
-      if (!req.user) {
-        return res.sendStatus(401);
-      }
-
-      const { conversationId, senderId } = req.params;
-
-      await Message.update(
-        { read: true },
-        {
-          where: {
-            conversationId,
-            senderId,
-          },
-        }
-      );
-
-      res.status(204).end();
-    } catch (error) {
-      next(error);
+router.put("/:conversationId/sender/:senderId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
     }
+
+    const userId = req.user.id;
+    const { conversationId, senderId } = req.params;
+
+    const conversation = await Conversation.findOne({
+      where: {
+        id: conversationId,
+      },
+    });
+
+    if (userId !== conversation.user1Id && userId !== conversation.user2Id) {
+      return res.sendStatus(403);
+    }
+
+    await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId,
+        },
+      }
+    );
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 module.exports = router;
