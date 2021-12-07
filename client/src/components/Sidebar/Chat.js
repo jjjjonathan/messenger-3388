@@ -50,11 +50,11 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} unread={unreadCount > 0} />
-      {unreadCount ? (
+      {!!unreadCount && (
         <Box className={classes.unreadBubble}>
           <Typography className={classes.unreadCount}>{unreadCount}</Typography>
         </Box>
-      ) : null}
+      )}
     </Box>
   );
 };
