@@ -95,7 +95,7 @@ export const setReadStatusInStore = (state, conversationId, senderId) => {
             read: true,
           };
         }
-        return { ...message };
+        return message;
       });
 
       // if messages were sent by other user, unread count is now 0
