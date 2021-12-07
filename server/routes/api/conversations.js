@@ -72,14 +72,13 @@ router.get("/", async (req, res, next) => {
         convoJSON.messages[convoJSON.messages.length - 1].text;
 
       // set property for unread message count
-      convoJSON.unreadCount = 0;
-      for (let i = 0; i < convoJSON.messages.length; i++) {
-        if (
-          !convoJSON.messages[i].read &&
-          convoJSON.messages[i].senderId !== userId
-        )
-          convoJSON.unreadCount += 1;
-      }
+      convoJSON.unreadCount = await Message.count({
+        where: {
+          conversationId: convoJSON.id,
+          senderId: convoJSON.otherUser.id,
+          read: false,
+        },
+      });
 
       conversations[i] = convoJSON;
     }
