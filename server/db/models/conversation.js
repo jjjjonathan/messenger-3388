@@ -4,7 +4,7 @@ const Message = require("./message");
 
 const Conversation = db.define("conversation", {});
 
-// find conversation given two user Ids
+// TODO find conversation via conversation ID
 
 Conversation.findConversation = async function (user1Id, user2Id) {
   const conversation = await Conversation.findOne({
