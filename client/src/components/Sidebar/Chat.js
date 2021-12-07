@@ -49,7 +49,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} unread={unreadCount > 0} />
       {unreadCount ? (
         <Box className={classes.unreadBubble}>
           <Typography className={classes.unreadCount}>{unreadCount}</Typography>
