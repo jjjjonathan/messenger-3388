@@ -9,7 +9,7 @@ const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexGrow: 8,
-    flexDirection: "column"
+    flexDirection: "column",
   },
   chatContainer: {
     marginLeft: 41,
@@ -17,8 +17,8 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between"
-  }
+    justifyContent: "space-between",
+  },
 }));
 
 const ActiveChat = (props) => {
@@ -27,12 +27,13 @@ const ActiveChat = (props) => {
   const conversation = props.conversation || {};
 
   useEffect(() => {
-    (async () => {
+    const markAsReadOnUpdate = async () => {
       if (conversation.unreadCount > 0) {
         await markAsRead(conversation.id, conversation.otherUser.id);
       }
-    })();
-  });
+    };
+    markAsReadOnUpdate();
+  }, [conversation, markAsRead]);
 
   return (
     <Box className={classes.root}>
