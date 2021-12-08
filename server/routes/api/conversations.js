@@ -67,9 +67,19 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
-      // set properties for notification count and latest message preview
+      // set property for latest message preview
       convoJSON.latestMessageText =
         convoJSON.messages[convoJSON.messages.length - 1].text;
+
+      // set property for unread message count
+      convoJSON.unreadCount = await Message.count({
+        where: {
+          conversationId: convoJSON.id,
+          senderId: convoJSON.otherUser.id,
+          read: false,
+        },
+      });
+
       conversations[i] = convoJSON;
     }
 
@@ -81,6 +91,41 @@ router.get("/", async (req, res, next) => {
     );
 
     res.json(conversations);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/:conversationId/sender/:senderId", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const userId = req.user.id;
+    const { conversationId, senderId } = req.params;
+
+    const conversation = await Conversation.findOne({
+      where: {
+        id: conversationId,
+      },
+    });
+
+    if (userId !== conversation.user1Id && userId !== conversation.user2Id) {
+      return res.sendStatus(403);
+    }
+
+    await Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId,
+          senderId,
+        },
+      }
+    );
+
+    res.status(204).end();
   } catch (error) {
     next(error);
   }

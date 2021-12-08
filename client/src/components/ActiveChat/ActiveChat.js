@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
+import { markAsRead } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexGrow: 8,
-    flexDirection: "column"
+    flexDirection: "column",
   },
   chatContainer: {
     marginLeft: 41,
@@ -16,14 +17,23 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between"
-  }
+    justifyContent: "space-between",
+  },
 }));
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  const { user } = props;
+  const { user, markAsRead } = props;
   const conversation = props.conversation || {};
+
+  useEffect(() => {
+    const markAsReadOnUpdate = async () => {
+      if (conversation.unreadCount > 0) {
+        await markAsRead(conversation.id, conversation.otherUser.id);
+      }
+    };
+    markAsReadOnUpdate();
+  }, [conversation, markAsRead]);
 
   return (
     <Box className={classes.root}>
@@ -57,9 +67,18 @@ const mapStateToProps = (state) => {
     conversation:
       state.conversations &&
       state.conversations.find(
-        (conversation) => conversation.otherUser.username === state.activeConversation
-      )
+        (conversation) =>
+          conversation.otherUser.username === state.activeConversation
+      ),
   };
 };
 
-export default connect(mapStateToProps, null)(ActiveChat);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    markAsRead: (conversationId, senderId) => {
+      dispatch(markAsRead(conversationId, senderId));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActiveChat);
